@@ -36,12 +36,20 @@ export function getCheerio(res: CrawlHTMLSingleResult) {
 }
 
 export async function crawlFile(url: string, dir: string) {
-  await crawl.crawlFile({
-    url,
-    fileName: path.basename(url, path.extname(url)),
-    storeDir: dir,
-  })
-  return path.basename(url)
+  const fileName = path.basename(url)
+  try {
+    await fs.access(path.join(dir, fileName), fs.constants.F_OK)
+    // 文件已存在：跳过
+    return fileName
+  } catch (err) {
+    // 文件不存在：下载
+    await crawl.crawlFile({
+      url,
+      fileName: path.basename(url, path.extname(url)),
+      storeDir: dir,
+    })
+  }
+  return fileName
 }
 
 export async function crawlFilePageImg(url: string, dir: string) {
