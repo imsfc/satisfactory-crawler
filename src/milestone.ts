@@ -5,6 +5,7 @@ import {
   crawlFilePageImg,
   createDir,
   getCheerio,
+  parseNumber,
   parseText,
 } from './util'
 
@@ -35,7 +36,7 @@ export interface Tier {
 function parseCost($element: cheerio.Cheerio<cheerio.AnyNode>): CostItem {
   return {
     itemName: parseText($element.find('a')),
-    quantity: parseInt(parseText($element).split('×')[0].trim()),
+    quantity: parseNumber(parseText($element).split('×')[0]),
   }
 }
 

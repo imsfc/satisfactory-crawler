@@ -2,6 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 import * as cheerio from 'cheerio'
 import { CrawlHTMLSingleResult, createCrawl } from 'x-crawl'
+import { isString } from 'radash'
 
 export const OUTPUT_DIR = './output'
 
@@ -72,4 +73,20 @@ export function parseText($element: cheerio.Cheerio<cheerio.AnyNode>) {
     .text()
     .trim()
     .replace(/[\s\t\n\r]+/g, ' ')
+}
+
+const extractNumbersFromStringReg = /\d+/g
+export function extractNumbersFromString(str: string) {
+  return str.match(extractNumbersFromStringReg)
+}
+
+export function parseNumber(
+  $element: string | cheerio.Cheerio<cheerio.AnyNode>,
+): number {
+  const str = isString($element) ? $element : $element.text()
+  const numStr = extractNumbersFromString(str)?.join('')
+  if (!numStr) {
+    return NaN
+  }
+  return parseFloat(numStr)
 }
