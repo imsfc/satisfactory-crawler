@@ -1,13 +1,6 @@
 import * as cheerio from 'cheerio'
 import { CostItem } from './milestone'
-import {
-  crawl,
-  crawlFile,
-  crawlFilePageImg,
-  createDir,
-  getCheerio,
-  parseText,
-} from './util'
+import { crawl, crawlFile, createDir, getCheerio, parseText } from './util'
 
 interface Building {
   name: string
@@ -105,7 +98,7 @@ async function parseBuildings(url: string): Promise<[Building[], Recipe[]]> {
         const name = parseText($element.find('.pi-title'))
 
         const image = await crawlFile(
-          $element.find('.pi-image a').attr('href')!,
+          decodeURIComponent($element.find('.pi-image a').attr('href')!),
           await createDir('buildings'),
         )
 
@@ -252,7 +245,7 @@ export async function getBuildings(): Promise<[Building[], Recipe[]]> {
       .toArray()
       .map(async (element) => {
         const $element = $(element)
-        return await parseBuildings($element.attr('href')!)
+        return await parseBuildings(decodeURIComponent($element.attr('href')!))
       }),
   )
 

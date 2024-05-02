@@ -89,7 +89,7 @@ async function parseMilestoneTableRow(
     .map((element) => $(element))
 
   const image = await crawlFilePageImg(
-    $milestone.find('a').attr('href')!,
+    decodeURIComponent($milestone.find('a').attr('href')!),
     await createDir('milestones'),
   )
 

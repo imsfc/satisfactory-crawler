@@ -62,7 +62,7 @@ export async function crawlFilePageImg(url: string, dir: string) {
   } catch (err) {
     // 文件不存在：解析并下载
     const $ = getCheerio(await crawl.crawlHTML(url))
-    return await crawlFile($('#file a').attr('href')!, dir)
+    return await crawlFile(decodeURIComponent($('#file a').attr('href')!), dir)
   }
 }
 
