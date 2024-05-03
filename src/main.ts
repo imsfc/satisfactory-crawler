@@ -1,37 +1,36 @@
-import { getBuildings } from './buildings'
-import { getMilestones } from './milestone'
-import { getPhases as getProjectAssemblyPhases } from './phases'
-import { translateObj } from './translate'
+import { getSCList, getSCDetails } from './satisfactory-calculator.com'
+import { getGGBuilding } from './satisfactory.wiki.gg'
 import { saveFile } from './util'
 
-const projectAssemblyPhases = await getProjectAssemblyPhases()
-await saveFile(
-  'project-assembly-phases.json',
-  JSON.stringify(projectAssemblyPhases),
+const scList = await getSCList()
+
+const scDetails = await getSCDetails({
+  en: scList.map(({ en }) => en.link),
+  zh: scList.map(({ zh }) => zh.link),
+})
+
+const scBuildings = scList.filter(({ en }) => en.breadcrumb[0] === 'Buildings')
+const scArchitecture = scList.filter(
+  ({ en }) => en.breadcrumb[0] === 'Architecture',
 )
-await saveFile(
-  'zh/project-assembly-phases.json',
-  JSON.stringify(translateObj(projectAssemblyPhases)),
+const scStructures = scList.filter(
+  ({ en }) => en.breadcrumb[0] === 'Structures',
 )
 
-const milestones = await getMilestones()
-await saveFile('milestones.json', JSON.stringify(milestones))
-await saveFile(
-  'zh/milestones.json',
-  JSON.stringify(
-    translateObj(
-      milestones,
-      /^description$|^milestones\.\d+\.image$|itemName$|rewards\.\d+\.name$|rewards\.\d+\.list/,
-    ),
-  ),
+const ggBuildingDetails = await getGGBuilding(
+  scBuildings.map(({ en }) => en.name),
 )
 
-const [buildings, recipes] = await getBuildings()
-await saveFile('buildings.json', JSON.stringify(buildings))
-await saveFile(
-  'zh/buildings.json',
-  JSON.stringify(
-    translateObj(buildings, /^description$|^image$|^className$|unlockedBy/),
-  ),
-)
-await saveFile('recipes.json', JSON.stringify(recipes))
+const diff = {}
+
+scBuildings.forEach((scBuilding, i) => {
+  const _i = scList.indexOf(scBuilding)
+  if (scDetails[_i].en.description !== ggBuildingDetails[i].description) {
+    diff[scBuilding.zh.name] = {
+      a: scDetails[_i].en.description,
+      b: ggBuildingDetails[i].description,
+    }
+  }
+})
+
+saveFile('diff.json', JSON.stringify(diff))

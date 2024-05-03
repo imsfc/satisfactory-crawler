@@ -1,16 +1,45 @@
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import * as cheerio from 'cheerio'
-import { CrawlHTMLSingleResult, createCrawl } from 'x-crawl'
-import { isString } from 'radash'
+import { CrawlApp, CrawlHTMLSingleResult } from 'x-crawl'
+import { isArray, isString } from 'radash'
 
 export const OUTPUT_DIR = './output'
 
-export const crawl = createCrawl({
-  enableRandomFingerprint: true,
-  baseUrl: 'https://satisfactory.wiki.gg/',
-  maxRetry: 3,
-})
+export async function reCrawlHTML(
+  crawl: CrawlApp,
+  res: CrawlHTMLSingleResult | CrawlHTMLSingleResult[],
+) {
+  const resArr = isArray(res) ? res : [res]
+
+  let redirectArr = resArr.filter(({ data }) =>
+    [301, 302, 307, 308].includes(data?.statusCode!),
+  )
+  if (redirectArr.length === 0) {
+    return resArr
+  }
+
+  const resArr2 = await crawl.crawlHTML(
+    redirectArr.map(({ data }) => {
+      const location = data?.headers.location!
+      const urlObj = new URL(location)
+      const pathAndQuery = urlObj.pathname + urlObj.search + urlObj.hash
+      return pathAndQuery
+    }),
+  )
+
+  const resArr3 = resArr.map((res) => {
+    const index = redirectArr.indexOf(res)
+
+    if (index === -1) {
+      return res
+    }
+
+    return resArr2[index]
+  })
+
+  return await reCrawlHTML(crawl, resArr3)
+}
 
 export async function createDir(directory: string) {
   const _directory = path.join(OUTPUT_DIR, directory)
@@ -36,43 +65,16 @@ export function getCheerio(res: CrawlHTMLSingleResult) {
   return cheerio.load(res.data.html)
 }
 
-export async function crawlFile(url: string, dir: string) {
-  const fileName = path.basename(url)
-  try {
-    await fs.access(path.join(dir, fileName), fs.constants.F_OK)
-    // 文件已存在：跳过
-    return fileName
-  } catch (err) {
-    // 文件不存在：下载
-    await crawl.crawlFile({
-      url,
-      fileName: path.basename(url, path.extname(url)),
-      storeDir: dir,
-    })
-  }
-  return fileName
-}
-
-export async function crawlFilePageImg(url: string, dir: string) {
-  const fileName = path.basename(url).replace(/^File:/, '')
-  try {
-    await fs.access(path.join(dir, fileName), fs.constants.F_OK)
-    // 文件已存在：跳过
-    return fileName
-  } catch (err) {
-    // 文件不存在：解析并下载
-    const $ = getCheerio(await crawl.crawlHTML(url))
-    return await crawlFile(decodeURIComponent($('#file a').attr('href')!), dir)
-  }
-}
-
 export function parseText($element: cheerio.Cheerio<cheerio.AnyNode>) {
-  $element.filter('br').replaceWith(' ')
-  $element.find('br').replaceWith(' ')
+  $element.filter('br').replaceWith('\n')
+  $element.find('br').replaceWith('\n')
   return $element
     .text()
     .trim()
-    .replace(/[\s\t\n\r]+/g, ' ')
+    .replace(/[\n\r]+/g, '\n')
+    .split('\n')
+    .map((str) => str.trim())
+    .join('\n')
 }
 
 const extractNumbersFromStringReg = /\d+/g
