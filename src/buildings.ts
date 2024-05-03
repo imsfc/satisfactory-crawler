@@ -2,6 +2,15 @@ import * as cheerio from 'cheerio'
 import { CostItem } from './milestone'
 import { crawl, crawlFile, createDir, getCheerio, parseText } from './util'
 
+const bans = [
+  // 设备指示灯
+  'Indicator Light',
+  // 间歇泉
+  'Geyser',
+  // 广告牌
+  'Signs',
+]
+
 interface Building {
   name: string
   image: string
@@ -84,16 +93,27 @@ async function parseBuildings(url: string): Promise<[Building[], Recipe[]]> {
   const list = await Promise.all(
     $('#mw-content-text aside')
       .toArray()
+      .filter((element) => {
+        const $element = $(element)
+        const text = parseText($element.find('.pi-title'))
+
+        // 过滤掉 bans
+        if (bans.find((ban) => text.includes(ban))) {
+          return false
+        }
+
+        return true
+      })
       .map(async (element): Promise<Building | null> => {
         const $element = $(element)
 
-        if ($element.find('.pi-header:contains("Dimensions")').length === 0) {
-          return null
-        }
+        // if ($element.find('.pi-header:contains("Dimensions")').length === 0) {
+        //   return null
+        // }
 
-        if ($element.find('.pi-header:contains("Ingre­dients")').length === 0) {
-          return null
-        }
+        // if ($element.find('.pi-header:contains("Ingre­dients")').length === 0) {
+        //   return null
+        // }
 
         const name = parseText($element.find('.pi-title'))
 
@@ -243,6 +263,21 @@ export async function getBuildings(): Promise<[Building[], Recipe[]]> {
   const list = await Promise.all(
     $('#mw-pages .mw-category-group a')
       .toArray()
+      .filter((element) => {
+        const text = parseText($(element))
+
+        // 过滤掉翻译页面
+        if (text.includes('/')) {
+          return false
+        }
+
+        // 过滤掉 bans
+        if (bans.find((ban) => text.includes(ban))) {
+          return false
+        }
+
+        return true
+      })
       .map(async (element) => {
         const $element = $(element)
         return await parseBuildings(decodeURIComponent($element.attr('href')!))
