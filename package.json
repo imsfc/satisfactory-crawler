@@ -1,16 +1,14 @@
 {
   "name": "satisfactory-crawler",
-  "version": "1.0.0",
-  "type": "module",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@9.0.6+sha1.648f6014eb363abb36618f2ba59282a9eeb3e879",
   "scripts": {
     "start": "node --import @swc-node/register/esm-register src/main.ts"
   },
   "devDependencies": {
-    "@swc-node/register": "^1.9.0"
-  },
-  "dependencies": {
+    "@swc-node/register": "^1.9.0",
+    "@types/node": "^20.12.8",
     "cheerio": "1.0.0-rc.12",
     "radash": "^12.1.0",
     "x-crawl": "^10.0.1"
