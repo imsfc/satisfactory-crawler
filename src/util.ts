@@ -37,7 +37,7 @@ export function saveCache(filePath: string, content: string) {
 export function readCache(filePath: string) {
   const _filePath = path.join(CACHE_DIR, filePath)
   try {
-    fs.accessSync(_filePath)
+    fs.accessSync(_filePath, fs.constants.F_OK)
     return fs.readFileSync(_filePath, { encoding: 'utf-8' })
   } catch (err) {
     return null

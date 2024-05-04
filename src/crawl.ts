@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { CrawlApp, CrawlHTMLSingleResult, createCrawl } from 'x-crawl'
 import { isString } from 'radash'
 import { hash, readCache, saveCache } from './util'
@@ -32,8 +34,8 @@ export class Crawl {
     return url.includes(this.baseUrl) ? url : new URL(url, this.baseUrl).href
   }
 
-  crawlHTML(urls: string): Promise<CrawlHTMLSingleResult>
-  crawlHTML(urls: string[]): Promise<CrawlHTMLSingleResult[]>
+  async crawlHTML(urls: string): Promise<CrawlHTMLSingleResult>
+  async crawlHTML(urls: string[]): Promise<CrawlHTMLSingleResult[]>
   async crawlHTML(
     urls: string | string[],
   ): Promise<CrawlHTMLSingleResult | CrawlHTMLSingleResult[]> {
@@ -45,7 +47,9 @@ export class Crawl {
     const noCatchResArr = await this.crawlApp.crawlHTML(noCacheUrls)
 
     console.info(
-      `crawl 命中缓存：${_urls.length - noCatchResArr.length}/${_urls.length}`,
+      `crawlHTML 命中缓存：${_urls.length - noCatchResArr.length}/${
+        _urls.length
+      }`,
     )
 
     const resArr = _urls.map((url, i) => {
@@ -61,7 +65,7 @@ export class Crawl {
       return single ? resArr[0] : resArr
     }
 
-    console.info(`crawl 重定向：${redirectArr.length}/${resArr.length}`)
+    console.info(`crawlHTML 重定向：${redirectArr.length}/${resArr.length}`)
 
     const redirectResArr = await this.crawlHTML(
       redirectArr.map(({ data }) => data?.headers.location!),
@@ -74,5 +78,42 @@ export class Crawl {
 
     saveCaches(_urls, newResArr)
     return single ? newResArr[0] : newResArr
+  }
+  async crawlFile(urls: string, dir: string): Promise<string>
+  async crawlFile(urls: string[], dir: string): Promise<string[]>
+  async crawlFile(
+    urls: string | string[],
+    dir: string,
+  ): Promise<string | string[]> {
+    const single = isString(urls)
+    const _urls = single ? [this.url(urls)] : urls.map((url) => this.url(url))
+
+    const downloadUrls = _urls.filter((url) => {
+      const fileName = path.basename(url)
+      try {
+        fs.accessSync(path.join(dir, fileName), fs.constants.F_OK)
+        return false
+      } catch (err) {
+        return true
+      }
+    })
+
+    console.info(
+      `crawlFile 命中缓存：${_urls.length - downloadUrls.length}/${
+        _urls.length
+      }`,
+    )
+
+    await this.crawlApp.crawlFile({
+      targets: downloadUrls,
+      fileNames: downloadUrls.map((url) =>
+        path.basename(url, path.extname(url)),
+      ),
+      storeDirs: dir,
+    })
+
+    const fileNames = _urls.map((url) => path.basename(url))
+
+    return single ? fileNames[0] : fileNames
   }
 }
