@@ -28,5 +28,5 @@ export async function getLinks(): Promise<string[]> {
   links.push(...(await getCategoryLinks('/wiki/Category:Items')))
   links.push(...(await getCategoryLinks('/wiki/Category:Fluids')))
 
-  return links
+  return [...new Set(links)]
 }
