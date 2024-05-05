@@ -1,3 +1,1 @@
-import { getLinks } from '~/satisfactory_wiki_gg/links.ts'
-
-console.log(await getLinks())
+import '~/satisfactory_wiki_gg/index.ts'

@@ -1,4 +1,5 @@
 import { load } from 'cheerio'
+import { map } from 'radash'
 import { http } from './http.ts'
 
 async function getCategoryLinks(url: string): Promise<string[]> {
@@ -15,7 +16,7 @@ async function getCategoryLinks(url: string): Promise<string[]> {
     .map((el) => decodeURIComponent($(el).attr('href')!))
 
   // 递归 获得 子分类 的 页面 链接数组
-  const subPages = await Promise.all(subcategories.map(getCategoryLinks))
+  const subPages = await map(subcategories, getCategoryLinks)
 
   return [...pages, ...subPages.flat()]
 }
