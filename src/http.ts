@@ -82,7 +82,7 @@ export class Http {
         `[ HTTP 下载 ] { status: ${response.status}, url: ${_url} }`,
       )
     }
-    const buffer = Buffer.from(await response.arrayBuffer())
+    const buffer = new Uint8Array(await response.arrayBuffer())
 
     // 写入文件和缓存
     await Deno.writeFile(outputPath, buffer)
