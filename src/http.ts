@@ -41,7 +41,7 @@ export class Http {
     const response = await fetch(_url)
     if (!response.ok) {
       throw new Error(
-        `[ HTTP 请求失败 ] { status: ${response.status}, url: ${_url} }`,
+        `[ HTTP 请求 ] { status: ${response.status}, url: ${_url} }`,
       )
     }
     const html = await response.text()
@@ -79,7 +79,7 @@ export class Http {
     const response = await fetch(_url)
     if (!response.ok) {
       throw new Error(
-        `[ HTTP 下载失败 ] { status: ${response.status}, url: ${_url} }`,
+        `[ HTTP 下载 ] { status: ${response.status}, url: ${_url} }`,
       )
     }
     const buffer = Buffer.from(await response.arrayBuffer())
