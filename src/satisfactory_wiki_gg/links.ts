@@ -1,6 +1,6 @@
 import { load } from 'cheerio'
 import { map } from 'radash'
-import { http } from './http.ts'
+import { http } from '~/satisfactory_wiki_gg/http.ts'
 
 async function getCategoryLinks(url: string): Promise<string[]> {
   const $ = load(await http.html(url))

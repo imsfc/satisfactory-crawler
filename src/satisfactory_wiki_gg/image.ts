@@ -1,5 +1,5 @@
 import { load } from 'cheerio'
-import { http } from './http.ts'
+import { http } from '~/satisfactory_wiki_gg/http.ts'
 
 // /images/5/50/Large_Billboard.png
 const reg1 = /^\/images\/([A-Za-z0-9]+)\/([A-Za-z0-9]+)\/([^/?#]+)$/
