@@ -21,6 +21,8 @@ async function getCategoryLinks(url: string): Promise<string[]> {
   return [...pages, ...subPages.flat()]
 }
 
+const zhUrlReg = /^\/wiki\/.*\/zh$/
+
 export async function getLinks(): Promise<string[]> {
   const links: string[] = []
 
@@ -28,5 +30,22 @@ export async function getLinks(): Promise<string[]> {
   links.push(...(await getCategoryLinks('/wiki/Category:Items')))
   links.push(...(await getCategoryLinks('/wiki/Category:Fluids')))
 
-  return [...new Set(links)]
+  return [...new Set(links)].filter((url) => {
+    // 排除 指示灯
+    if (url === '/wiki/Indicator_Light') {
+      return false
+    }
+
+    // 排除 已删除物品：Vines
+    if (url === '/wiki/Vines') {
+      return false
+    }
+
+    // 排除 中文页面
+    if (zhUrlReg.test(url)) {
+      return false
+    }
+
+    return true
+  })
 }
