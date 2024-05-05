@@ -1,0 +1,12 @@
+{
+  "imports": {
+    "~/": "./src/",
+    "@std/crypto": "jsr:@std/crypto@^0.224.0",
+    "@std/encoding": "jsr:@std/encoding@^0.224.0",
+    "@std/fs": "jsr:@std/fs@^0.224.0",
+    "@std/path": "jsr:@std/path@^0.224.0",
+    "@std/url": "jsr:@std/url@^0.224.0",
+    "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
+    "radash": "https://esm.sh/radash@12.1.0"
+  }
+}
