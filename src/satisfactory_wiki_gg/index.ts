@@ -1,6 +1,6 @@
 import { map } from 'radash'
-import { getLinks } from './links.ts'
-import { getAside } from './aside.ts'
+import { getLinks } from '~/satisfactory_wiki_gg/links.ts'
+import { getAside } from '~/satisfactory_wiki_gg/aside/index.ts'
 
 const links = await getLinks()
 
