@@ -4,11 +4,14 @@ import { getAside } from '~/satisfactory_wiki_gg/aside/index.ts'
 
 const links = await getLinks()
 
-Deno.writeTextFile(
+await Deno.writeTextFile(
   './tmp.json',
   JSON.stringify(
-    await map(links, async (url) => {
-      return await getAside(url)
-    }),
+    (
+      await map(links, async (url) => {
+        // console.log(url)
+        return await getAside(url)
+      })
+    ).flat(),
   ),
 )

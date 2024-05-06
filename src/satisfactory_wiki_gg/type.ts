@@ -14,11 +14,20 @@ export interface AsideBuilding {
   inventory_size?: InventorySize
 }
 
+export type AsideDimensionsValue =
+  | number // 单值
+  | number[] // 多值
+  | { min: number; max: number } // 可变范围
+
+export type AsideDimensionsLength =
+  | AsideDimensionsValue
+  | { visual: AsideDimensionsValue; hitbox: AsideDimensionsValue }
+
 export interface AsideDimensions {
-  width?: number
-  length?: number
-  height?: number
-  area?: number
+  width?: AsideDimensionsLength
+  length?: AsideDimensionsLength
+  height?: AsideDimensionsLength
+  area?: AsideDimensionsLength
   stackable?: boolean
   underwater?: number
   above_water?: number
