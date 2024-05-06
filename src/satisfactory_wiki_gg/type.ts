@@ -1,3 +1,8 @@
+export interface ItemWithQuantity {
+  itemName: string
+  quantity: number
+}
+
 export interface InventorySize {
   value: number
   unit: 'm3' | 'slots'
@@ -47,5 +52,6 @@ export interface Aside {
   // group
   building?: AsideBuilding
   dimensions?: AsideDimensions
+  ingredients?: ItemWithQuantity[]
   item?: AsideItem
 }
