@@ -21,7 +21,7 @@ async function getCategoryLinks(url: string): Promise<string[]> {
   return [...pages, ...subPages.flat()]
 }
 
-const zhUrlReg = /^\/wiki\/.*\/zh$/
+const regZhUrl = /^\/wiki\/.*\/zh$/
 
 export async function getLinks(): Promise<string[]> {
   const links: string[] = []
@@ -42,7 +42,7 @@ export async function getLinks(): Promise<string[]> {
     }
 
     // 排除 中文页面
-    if (zhUrlReg.test(url)) {
+    if (regZhUrl.test(url)) {
       return false
     }
 
