@@ -58,6 +58,10 @@ export interface AsideLiquid {
   abbreviation?: string
 }
 
+export interface AsideGas {
+  abbreviation?: string
+}
+
 export interface Aside {
   // basic
   name?: string
@@ -73,4 +77,5 @@ export interface Aside {
   equipment?: AsideEquipment
   fuel?: AsideFuel
   liquid?: AsideLiquid
+  gas?: AsideGas
 }
