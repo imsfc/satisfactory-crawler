@@ -49,6 +49,11 @@ export interface AsideEquipment {
   damage?: number
 }
 
+export interface AsideFuel {
+  energy?: number
+  stack_energy?: number
+}
+
 export interface Aside {
   // basic
   name?: string
@@ -62,4 +67,5 @@ export interface Aside {
   ingredients?: ItemWithQuantity[]
   item?: AsideItem
   equipment?: AsideEquipment
+  fuel?: AsideFuel
 }
