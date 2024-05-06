@@ -54,6 +54,10 @@ export interface AsideFuel {
   stack_energy?: number
 }
 
+export interface AsideLiquid {
+  abbreviation?: string
+}
+
 export interface Aside {
   // basic
   name?: string
@@ -68,4 +72,5 @@ export interface Aside {
   item?: AsideItem
   equipment?: AsideEquipment
   fuel?: AsideFuel
+  liquid?: AsideLiquid
 }
