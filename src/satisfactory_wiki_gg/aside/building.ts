@@ -3,8 +3,8 @@ import { isEmpty } from 'radash'
 import { toNumber, toText } from '~/cheerio.ts'
 import { AsideBuilding, InventorySize } from '~/satisfactory_wiki_gg/type.ts'
 
-const reg_m3 = /^(\d+) m³$/
-const reg_slots = /^(\d+) slots$/
+const reg_m3 = /^(\d+)\s+m³$/
+const reg_slots = /^(\d+)\s+slots$/
 // 解析存储空间
 function resolveInventorySize(text: string): InventorySize | undefined {
   if (reg_m3.test(text)) {
