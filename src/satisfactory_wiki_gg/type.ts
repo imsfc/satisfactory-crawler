@@ -44,6 +44,11 @@ export interface AsideItem {
   radioactive?: number
 }
 
+export interface AsideEquipment {
+  equipment_slot?: 'head' | 'body' | 'hands' | 'back' | 'legs'
+  damage?: number
+}
+
 export interface Aside {
   // basic
   name?: string
@@ -56,4 +61,5 @@ export interface Aside {
   dimensions?: AsideDimensions
   ingredients?: ItemWithQuantity[]
   item?: AsideItem
+  equipment?: AsideEquipment
 }
