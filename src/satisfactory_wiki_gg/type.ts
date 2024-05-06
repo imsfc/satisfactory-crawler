@@ -40,6 +40,8 @@ export interface AsideDimensions {
 
 export interface AsideItem {
   stack_size?: number
+  sink_points?: number
+  radioactive?: number
 }
 
 export interface Aside {
