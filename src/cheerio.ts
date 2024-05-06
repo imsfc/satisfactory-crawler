@@ -19,12 +19,14 @@ export function toText($element: string | Cheerio<AnyNode>) {
     .join('\n')
 }
 
-function extractNumbersFromString(str: string) {
-  return str.match(/\d+/g)?.join('')
-}
+const regNumGap = /[,\s]/g
+const regStrNum = /(\d+(\.\d+)?)/
 
 export function toNumber($element: string | Cheerio<AnyNode>): number {
   const str = isString($element) ? $element : toText($element)
-  const numStr = extractNumbersFromString(str)
-  return numStr ? parseFloat(numStr) : NaN
+  const result = regStrNum.exec(str.replace(regNumGap, ''))
+  if (result?.[0]) {
+    return parseFloat(result[0])
+  }
+  return NaN
 }
