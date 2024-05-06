@@ -1,4 +1,5 @@
 import { Element, load } from 'cheerio'
+import { isEmpty } from 'radash'
 import { toNumber, toText } from '~/cheerio.ts'
 import { AsideBuilding, InventorySize } from '~/satisfactory_wiki_gg/type.ts'
 
@@ -27,7 +28,6 @@ function resolveInventorySize(text: string): InventorySize | undefined {
 export function getAsideBuilding(el: Element): AsideBuilding | undefined {
   const $ = load(el)
 
-  let flag = false
   const obj: AsideBuilding = {}
 
   $(':root > .pi-data')
@@ -38,23 +38,30 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
 
       // 耗电量
       if (label === 'Power usage') {
-        obj.power_usage = toNumber(value)
-        flag = true
-        return
+        const _val = toNumber(value)
+        if (!isNaN(_val)) {
+          obj.power_usage = _val
+          return
+        }
       }
 
       // 发电量
       if (label === 'Power generated') {
-        obj.power_generated = toNumber(value)
-        flag = true
-        return
+        const _val = toNumber(value)
+        if (!isNaN(_val)) {
+          obj.power_generated = _val
+          return
+        }
       }
 
       // 可超频
       if (label === 'Overclock\u00adable') {
-        obj.overclockable = value === 'Yes'
-        flag = true
-        return
+        const _yes = value === 'Yes'
+        const _no = value === 'No'
+        if (_yes || _no) {
+          obj.overclockable = _yes
+          return
+        }
       }
 
       // 传送带输入
@@ -62,9 +69,8 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
         const _val = toNumber(value)
         if (!isNaN(_val)) {
           obj.conveyor_inputs = _val
-          flag = true
+          return
         }
-        return
       }
 
       // 传送带输出
@@ -72,9 +78,8 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
         const _val = toNumber(value)
         if (!isNaN(_val)) {
           obj.conveyor_outputs = _val
-          flag = true
+          return
         }
-        return
       }
 
       // 管道输入
@@ -82,9 +87,8 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
         const _val = toNumber(value)
         if (!isNaN(_val)) {
           obj.pipeline_inputs = _val
-          flag = true
+          return
         }
-        return
       }
 
       // 管道输出
@@ -92,15 +96,13 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
         const _val = toNumber(value)
         if (!isNaN(_val)) {
           obj.pipeline_outputs = _val
-          flag = true
+          return
         }
-        return
       }
 
       // 存储空间
       if (label === 'Inventory size') {
         obj.inventory_size = resolveInventorySize(value)
-        flag = true
         return
       }
 
@@ -109,5 +111,5 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
       )
     })
 
-  return flag ? obj : undefined
+  return !isEmpty(obj) ? obj : undefined
 }
