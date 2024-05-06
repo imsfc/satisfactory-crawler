@@ -39,7 +39,7 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
       // 耗电量
       if (label === 'Power usage') {
         const _val = toNumber(value)
-        if (!isNaN(_val)) {
+        if (!Number.isNaN(_val)) {
           obj.power_usage = _val
           return
         }
@@ -48,7 +48,7 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
       // 发电量
       if (label === 'Power generated') {
         const _val = toNumber(value)
-        if (!isNaN(_val)) {
+        if (!Number.isNaN(_val)) {
           obj.power_generated = _val
           return
         }
@@ -67,7 +67,7 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
       // 传送带输入
       if (label === 'Conveyor\ninputs') {
         const _val = toNumber(value)
-        if (!isNaN(_val)) {
+        if (!Number.isNaN(_val)) {
           obj.conveyor_inputs = _val
           return
         }
@@ -76,7 +76,7 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
       // 传送带输出
       if (label === 'Conveyor\noutputs') {
         const _val = toNumber(value)
-        if (!isNaN(_val)) {
+        if (!Number.isNaN(_val)) {
           obj.conveyor_outputs = _val
           return
         }
@@ -85,7 +85,7 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
       // 管道输入
       if (label === 'Pipeline\ninputs') {
         const _val = toNumber(value)
-        if (!isNaN(_val)) {
+        if (!Number.isNaN(_val)) {
           obj.pipeline_inputs = _val
           return
         }
@@ -94,7 +94,7 @@ export function getAsideBuilding(el: Element): AsideBuilding | undefined {
       // 管道输出
       if (label === 'Pipeline\noutputs') {
         const _val = toNumber(value)
-        if (!isNaN(_val)) {
+        if (!Number.isNaN(_val)) {
           obj.pipeline_outputs = _val
           return
         }
