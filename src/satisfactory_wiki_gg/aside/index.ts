@@ -12,6 +12,7 @@ import { getAsideEquipment } from '~/satisfactory_wiki_gg/aside/equipment.ts'
 import { getAsideFuel } from '~/satisfactory_wiki_gg/aside/fuel.ts'
 import { getAsideLiquid } from '~/satisfactory_wiki_gg/aside/liquid.ts'
 import { getAsideGas } from '~/satisfactory_wiki_gg/aside/gas.ts'
+import { getAsideVehicle } from '~/satisfactory_wiki_gg/aside/vehicle.ts'
 
 export async function getAside(url: string): Promise<Aside[]> {
   const $ = load(await http.html(url))
@@ -68,6 +69,7 @@ export async function getAside(url: string): Promise<Aside[]> {
         }
 
         if (groupName === 'Vehicle') {
+          asideObj.vehicle = getAsideVehicle(group)
           return
         }
 

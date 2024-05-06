@@ -62,6 +62,10 @@ export interface AsideGas {
   abbreviation?: string
 }
 
+export interface AsideVehicle {
+  maximum_speed?: number
+}
+
 export interface Aside {
   // basic
   name?: string
@@ -78,4 +82,5 @@ export interface Aside {
   fuel?: AsideFuel
   liquid?: AsideLiquid
   gas?: AsideGas
+  vehicle?: AsideVehicle
 }
